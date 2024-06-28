@@ -40,10 +40,25 @@ add_library(
   relations/ram_computations/memory/ra_memory.cpp
   relations/ram_computations/rams/fooram/fooram_aux.cpp
   relations/ram_computations/rams/tinyram/tinyram_aux.cpp
+  zk_proof_systems/ppzksnark/r1cs_ppzksnark/demo.cpp
 )
+add_library(snark_demo STATIC zk_proof_systems/ppzksnark/r1cs_ppzksnark/demo.cpp)
+target_include_directories(snark_demo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
 if("${USE_LINKED_LIBRARIES}")
   target_link_libraries(
     snark
+    
+    ff
+    ${GMP_LIBRARIES}
+    ${GMPXX_LIBRARIES}
+    ${CRYPTO_LIBRARIES}
+    ${PROCPS_LIBRARIES}
+    ${LIBFF_LIBRARIES}
+    ${SNARK_EXTRALIBS}
+  )
+  target_link_libraries(
+    snark_demo
     
     ff
     ${GMP_LIBRARIES}
@@ -66,6 +81,23 @@ else()
   )
   target_include_directories(
     snark
+
+    PUBLIC
+    ${DEPENDS_DIR}/libff
+    ${DEPENDS_DIR}/libfqfft
+  )
+  target_link_libraries(
+    snark_demo
+    
+    ff
+    ${GMP_LIBRARIES}
+    ${GMPXX_LIBRARIES}
+    ${CRYPTO_LIBRARIES}
+    ${PROCPS_LIBRARIES}
+    ${SNARK_EXTRALIBS}
+  )
+  target_include_directories(
+    snark_demo
 
     PUBLIC
     ${DEPENDS_DIR}/libff
